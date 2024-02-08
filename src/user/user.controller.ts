@@ -1,21 +1,27 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, ParseFilePipe, MaxFileSizeValidator, FileTypeValidator } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, ParseFilePipe, MaxFileSizeValidator, FileTypeValidator, BadRequestException } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ImageValidator } from 'src/shared/image.validator';
+import { diskStorage } from 'multer';
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService,private readonly imageValidator : ImageValidator) {}
+  constructor(private readonly userService: UserService) {}
 
   @Post()
-  @UseInterceptors(FileInterceptor('avatar'))
+  @UseInterceptors(FileInterceptor('avatar',{storage:diskStorage({destination(req, file, callback) {
+    if(!file.mimetype.startsWith("image"))
+      throw new BadRequestException("provide an image")
+
+    callback(null,"uploads/")
+  },filename(req, file, callback) {
+    callback(null,`${Date.now()}-${file.originalname}`)
+  },},)}))
   create(
     @Body() createUserDto: CreateUserDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
-     this.imageValidator.validate(file)
     console.log(createUserDto, '*********', file);
   }
 
