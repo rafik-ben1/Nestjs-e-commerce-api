@@ -21,8 +21,5 @@ export class CreateUserDto {
 
     password : string;
 
-    @IsString()
-
-    avatar : string;
 
 }
