@@ -1,7 +1,9 @@
 import { Brand } from "src/brand/entities/brand.entity";
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn,} from "typeorm";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn, Unique,} from "typeorm";
 
 @Entity()
+@Unique(["title"])
+
 export class Product {
    
     @PrimaryGeneratedColumn()
@@ -20,11 +22,11 @@ export class Product {
 
     description : string;
 
-    @Column()
-
+    @Column({default:0})
+    
     averageRating : number;
 
-    @Column()
+    @Column({default:0})
 
     totalRatings : number;
 

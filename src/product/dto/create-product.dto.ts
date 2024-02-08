@@ -1,4 +1,5 @@
 import {IsIn, IsNumber, IsString} from "class-validator"
+import { Brand } from "src/brand/entities/brand.entity";
 export class CreateProductDto {
 
     @IsString()
@@ -17,5 +18,13 @@ export class CreateProductDto {
     @IsIn(["male","female","unisexe"])
 
     gender : string;
+
+    @IsNumber()
+
+    brand : Brand;
+
+    @IsNumber()
+
+    stock : number;
     
 }

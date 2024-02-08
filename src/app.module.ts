@@ -6,6 +6,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Product } from './product/entities/product.entity';
 import { BrandModule } from './brand/brand.module';
 import { Brand } from './brand/entities/brand.entity';
+import { UserModule } from './user/user.module';
+import { User } from './user/entities/user.entity';
+import { ReviewModule } from './review/review.module';
+import { Review } from './review/entities/review.entity';
 
 @Module({
   imports: [TypeOrmModule.forRoot({
@@ -15,9 +19,9 @@ import { Brand } from './brand/entities/brand.entity';
     username: 'root',
     password: '',
     database: 'ttt',
-    entities: [Product,Brand],
+    entities: [Product,Brand,User,Review],
     synchronize: true
-  }), ProductModule, BrandModule],
+  }), ProductModule, BrandModule, UserModule, ReviewModule],
   controllers: [AppController],
   providers: [AppService],
 })
