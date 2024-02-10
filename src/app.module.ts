@@ -11,9 +11,10 @@ import { User } from './user/entities/user.entity';
 import { ReviewModule } from './review/review.module';
 import { Review } from './review/entities/review.entity';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [TypeOrmModule.forRoot({
+  imports: [ConfigModule.forRoot({isGlobal:true}),TypeOrmModule.forRoot({
     type: 'mysql',
     host: 'localhost',
     port: 3306,
