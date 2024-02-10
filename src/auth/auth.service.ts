@@ -13,23 +13,35 @@ import { JwtService } from '@nestjs/jwt';
 @Injectable()
 export class AuthService {
   constructor(
+    private readonly jwt: JwtService,
     @InjectRepository(User) private userRepository: Repository<User>,
     private readonly bcrypt: BcryptService,
-    private readonly jwt: JwtService,
   ) {}
   async login(loginDto: LoginDto) {
     const user = await this.userRepository.findOneBy({ email: loginDto.email });
     if (!user) {
       throw new NotFoundException('no user found with the provided email!');
     }
-    const isMatch = this.bcrypt.comparePasswords(
+    const isMatch = await this.bcrypt.comparePasswords(
       loginDto.password,
       user.password,
     );
     if (!isMatch) {
       throw new BadRequestException('incorrect password!');
     }
-    const token = this.jwt.sign(`${user.id}`);
-    return { ...user, token };
+    const payload = { sub: user.id, role: user.role };
+    const token = this.jwt.sign(payload, {
+      secret: process.env.JWT_SECRET,
+      expiresIn: process.env.EXPIRES_IN,
+    });
+    return {
+      user: {
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        avatar: user.avatar,
+      },
+      token,
+    };
   }
 }
