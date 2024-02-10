@@ -8,11 +8,13 @@ import {
   Delete,
   UseInterceptors,
   UploadedFile,
+  UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ImageUploadConfig } from 'src/shared/ImageUploadConfig';
+import { AuthGuard } from 'src/auth/auth.guard';
 
 @Controller('users')
 export class UserController {
@@ -22,7 +24,7 @@ export class UserController {
   async create(@Body() createUserDto: CreateUserDto) {
     return await this.userService.create(createUserDto);
   }
-
+  @UseGuards(AuthGuard)
   @Get()
   async findAll() {
     return await this.userService.findAll();

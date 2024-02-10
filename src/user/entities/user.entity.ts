@@ -18,7 +18,7 @@ export class User {
   @Column({ default: 'user' })
   role: string;
 
-  @Column()
+  @Column({ default: '' })
   avatar: string;
 
   @OneToMany(() => Review, (review) => review.author)
