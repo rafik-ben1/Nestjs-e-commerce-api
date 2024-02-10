@@ -9,6 +9,7 @@ import { Repository } from 'typeorm';
 import { User } from 'src/user/entities/user.entity';
 import { BcryptService } from './bcrypt.service';
 import { JwtService } from '@nestjs/jwt';
+import { RegisterDto } from './dto/register.dto';
 
 @Injectable()
 export class AuthService {
@@ -40,6 +41,34 @@ export class AuthService {
         email: user.email,
         role: user.role,
         avatar: user.avatar,
+      },
+      token,
+    };
+  }
+  async register(registerDto: RegisterDto) {
+    const userExists = await this.userRepository.findOneBy({
+      email: registerDto.email,
+    });
+    if (userExists) {
+      throw new BadRequestException('email already taken');
+    }
+    const hashedPassword = await this.bcrypt.hashPassword(registerDto.password);
+    const user = this.userRepository.create({
+      ...registerDto,
+      password: hashedPassword,
+    });
+    const savedUser = await this.userRepository.save(user);
+    const payload = { sub: savedUser.id, role: savedUser.role };
+    const token = this.jwt.sign(payload, {
+      secret: process.env.JWT_SECRET,
+      expiresIn: process.env.EXPIRES_IN,
+    });
+    return {
+      user: {
+        name: savedUser.name,
+        email: savedUser.email,
+        role: savedUser.role,
+        avatar: savedUser.avatar,
       },
       token,
     };
