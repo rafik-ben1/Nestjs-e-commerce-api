@@ -10,6 +10,7 @@ import { UserModule } from './user/user.module';
 import { User } from './user/entities/user.entity';
 import { ReviewModule } from './review/review.module';
 import { Review } from './review/entities/review.entity';
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
 
 @Module({
   imports: [TypeOrmModule.forRoot({
@@ -21,7 +22,7 @@ import { Review } from './review/entities/review.entity';
     database: 'ttt',
     entities: [Product,Brand,User,Review],
     synchronize: true
-  }), ProductModule, BrandModule, UserModule, ReviewModule],
+  }), ProductModule, BrandModule, UserModule, ReviewModule, CloudinaryModule],
   controllers: [AppController],
   providers: [AppService],
 })

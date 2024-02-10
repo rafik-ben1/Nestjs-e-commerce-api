@@ -6,10 +6,8 @@ export const FileUploadInterceptor = (fieldName: string) => FileInterceptor(fiel
   storage: diskStorage({
     destination: (req, file, callback) => {
       if (!file.mimetype.startsWith('image')) {
-        callback(new BadRequestException('Please provide an image'), 'uploads/');
-        return;
+        throw new BadRequestException('Please provide an image');
       }
-
       callback(null, 'uploads/');
     },
     filename: (req, file, callback) => {
