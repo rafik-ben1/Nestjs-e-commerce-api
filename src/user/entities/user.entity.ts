@@ -1,35 +1,26 @@
-import { Review } from "src/review/entities/review.entity";
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn, Unique } from "typeorm";
+import { Review } from 'src/review/entities/review.entity';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
-@Unique(["email"])
 export class User {
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @PrimaryGeneratedColumn()
+  @Column()
+  name: string;
 
-    id : number;
+  @Column()
+  email: string;
 
-    @Column()
+  @Column()
+  password: string;
 
-    name : string;
+  @Column({ default: 'user' })
+  role: string;
 
-    @Column()
+  @Column()
+  avatar: string;
 
-    email : string;
-
-    @Column()
-
-    password : string;
-
-    @Column({default:"user"})
-
-    role : string;
-
-    @Column()
-
-    avatar : string;
-
-    @OneToMany(()=>Review,review => review.author)
-
-    reviews : Review[];
+  @OneToMany(() => Review, (review) => review.author)
+  reviews: Review[];
 }

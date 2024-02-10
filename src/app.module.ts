@@ -14,16 +14,24 @@ import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [ConfigModule.forRoot({isGlobal:true}),TypeOrmModule.forRoot({
-    type: 'mysql',
-    host: 'localhost',
-    port: 3306,
-    username: 'root',
-    password: '',
-    database: 'ttt',
-    entities: [Product,Brand,User,Review],
-    synchronize: true
-  }), ProductModule, BrandModule, UserModule, ReviewModule, CloudinaryModule],
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
+    TypeOrmModule.forRoot({
+      type: 'mysql',
+      host: 'localhost',
+      port: 3306,
+      username: 'root',
+      password: '',
+      database: 'ttt',
+      entities: [Product, Brand, User, Review],
+      synchronize: true,
+    }),
+    ProductModule,
+    BrandModule,
+    UserModule,
+    ReviewModule,
+    CloudinaryModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
