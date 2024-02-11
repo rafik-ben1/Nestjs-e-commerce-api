@@ -7,10 +7,11 @@ import { JwtModule } from '@nestjs/jwt';
 import { BcryptService } from './bcrypt.service';
 import { JWT_SECRET } from './constants';
 import { AuthGuard } from './auth.guard';
+import { RoleGuard } from './roles.guard';
 
 @Module({
   controllers: [AuthController],
-  providers: [AuthService, BcryptService, AuthGuard],
+  providers: [AuthService, BcryptService, AuthGuard, RoleGuard],
   imports: [
     TypeOrmModule.forFeature([User]),
     JwtModule.register({

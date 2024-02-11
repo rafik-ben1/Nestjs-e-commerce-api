@@ -15,6 +15,8 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ImageUploadConfig } from 'src/shared/ImageUploadConfig';
 import { AuthGuard } from 'src/auth/auth.guard';
+import { Roles } from 'src/auth/roles.decorator';
+import { RoleGuard } from 'src/auth/roles.guard';
 
 @Controller('users')
 export class UserController {
@@ -24,7 +26,8 @@ export class UserController {
   async create(@Body() createUserDto: CreateUserDto) {
     return await this.userService.create(createUserDto);
   }
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, RoleGuard)
+  @Roles('user')
   @Get()
   async findAll() {
     return await this.userService.findAll();
