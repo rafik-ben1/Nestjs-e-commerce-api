@@ -27,17 +27,19 @@ export class UserController {
     return await this.userService.create(createUserDto);
   }
   @UseGuards(AuthGuard, RoleGuard)
-  @Roles('user')
+  @Roles('admin')
   @Get()
   async findAll() {
     return await this.userService.findAll();
   }
-
+  @UseGuards(AuthGuard, RoleGuard)
+  @Roles('admin')
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.userService.findOne(+id);
   }
-
+  @UseGuards(AuthGuard, RoleGuard)
+  @Roles('admin')
   @UseInterceptors(ImageUploadConfig('avatar'))
   @Patch(':id')
   async update(
@@ -47,7 +49,8 @@ export class UserController {
   ) {
     return await this.userService.update(+id, updateUserDto, file);
   }
-
+  @UseGuards(AuthGuard, RoleGuard)
+  @Roles('admin')
   @Delete(':id')
   async remove(@Param('id') id: string) {
     return await this.userService.remove(+id);

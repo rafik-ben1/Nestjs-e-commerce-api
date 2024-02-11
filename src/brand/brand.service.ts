@@ -1,19 +1,32 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateBrandDto } from './dto/create-brand.dto';
 import { UpdateBrandDto } from './dto/update-brand.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Brand } from './entities/brand.entity';
+import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 
 @Injectable()
 export class BrandService {
   constructor(
     @InjectRepository(Brand)
-    private brandRepository : Repository<Brand>
-  ){}
-  create(createBrandDto: CreateBrandDto) {
-    const brand =  this.brandRepository.create(createBrandDto);
-    return  this.brandRepository.save(brand)
+    private brandRepository: Repository<Brand>,
+    private readonly cloudinary: CloudinaryService,
+  ) {}
+  async create(createBrandDto: CreateBrandDto, file: Express.Multer.File) {
+    if (!file) {
+      throw new BadRequestException('please provide an image');
+    }
+    const brandExists = await this.brandRepository.findOneBy({
+      title: createBrandDto.title,
+    });
+    if (brandExists) throw new BadRequestException('brand title already taken');
+    const image = await this.cloudinary.uploadImage(file);
+    const brand = this.brandRepository.create({
+      ...createBrandDto,
+      image: image.secure_url,
+    });
+    return this.brandRepository.save(brand);
   }
 
   findAll() {
@@ -21,11 +34,24 @@ export class BrandService {
   }
 
   findOne(id: number) {
-    return this.brandRepository.findOne({where:{id}});
+    return this.brandRepository.findOne({ where: { id } });
   }
 
-  update(id: number, updateBrandDto: UpdateBrandDto) {
-    return `This action updates a #${id} brand`;
+  async update(
+    id: number,
+    updateBrandDto: UpdateBrandDto,
+    file: Express.Multer.File,
+  ) {
+    const brand = await this.brandRepository.findOneBy({ id });
+    if (file) {
+      const image = await this.cloudinary.uploadImage(file);
+      return await this.brandRepository.save({
+        ...brand,
+        ...updateBrandDto,
+        image: image ? image.secure_url : brand.image,
+      });
+    }
+    return await this.brandRepository.save({ ...brand, ...updateBrandDto });
   }
 
   remove(id: number) {
