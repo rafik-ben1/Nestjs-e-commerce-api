@@ -54,7 +54,9 @@ export class BrandService {
     return await this.brandRepository.save({ ...brand, ...updateBrandDto });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} brand`;
+  async remove(id: number) {
+    const brand = await this.brandRepository.findOneBy({ id });
+    await this.cloudinary.deleteImage(brand.image);
+    return await this.brandRepository.delete(id);
   }
 }

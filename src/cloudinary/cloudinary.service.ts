@@ -12,8 +12,26 @@ export class CloudinaryService {
         if (error) return reject(error);
         resolve(result);
       });
-const buffer = Readable.from(file.buffer)
-buffer.pipe(upload)
+      const buffer = Readable.from(file.buffer);
+      buffer.pipe(upload);
     });
+  }
+  async deleteImage(url: string) {
+    try {
+      const publicId = this.extractPublicIdFromUrl(url);
+
+      const deletionResult = await v2.uploader.destroy(publicId);
+
+      return deletionResult;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  private extractPublicIdFromUrl(url: string): string {
+    const parts = url.split('/');
+    const filename = parts[parts.length - 1];
+    const publicId = filename.split('.')[0];
+    return publicId;
   }
 }
